@@ -242,9 +242,14 @@
       e.style.left = (50 + 50 * rad * Math.cos(a)) + '%'; e.style.top = (50 + 50 * rad * Math.sin(a)) + '%';
       e.style.fontSize = (D * (n > 6 ? .115 : .14)) + 'px'; wh.appendChild(e); game.letterEls.push(e);
     });
+    // layout geometry for hit-testing (unscaled: .sel letters are scaled up by CSS, which used to grow their hit zone and steal/undo neighbours)
+    game.lpos = game.letters.map((ch, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [.5 + .5 * rad * Math.cos(a), .5 + .5 * rad * Math.sin(a)]; });
   }
   function centerOf(i) { const wr = $('wheel').getBoundingClientRect(), r = game.letterEls[i].getBoundingClientRect(); return [r.left + r.width / 2 - wr.left, r.top + r.height / 2 - wr.top]; }
-  function hit(x, y) { for (let i = 0; i < game.letterEls.length; i++) { const r = game.letterEls[i].getBoundingClientRect(); if (Math.hypot(x - r.left - r.width / 2, y - r.top - r.height / 2) < r.width * .62) return i; } return -1; }
+  // nearest letter to the pointer (by layout position, never by transformed rect); returns [index, distance / hit radius] or [-1, Infinity]
+  function hitD(x, y) { const wr = $('wheel').getBoundingClientRect(), D = wr.width, hr = D * .24 * .62; let best = -1, bd = Infinity;
+    (game.lpos || []).forEach(([fx, fy], i) => { const d = Math.hypot(x - wr.left - fx * D, y - wr.top - fy * D) / hr; if (d < 1 && d < bd) { bd = d; best = i; } }); return [best, bd]; }
+  function hit(x, y) { return hitD(x, y)[0]; }
   function drawLines(px, py) {
     const pts = game.sel.map(centerOf); let s = '';
     if (pts.length) { let d = 'M' + pts.map(p => p.join(',')).join(' L'); if (px != null) { const wr = $('wheel').getBoundingClientRect(); d += ` L${px - wr.left},${py - wr.top}`; }
@@ -255,8 +260,10 @@
   function updSel() { game.letterEls.forEach((e, i) => e.classList.toggle('sel', game.sel.includes(i))); const w = $('word'); w.className = ''; w.textContent = curWord(); }
   const wheel = $('wheel');
   wheel.addEventListener('pointerdown', e => { Sound.unlock(); const i = hit(e.clientX, e.clientY); if (i < 0) return; game.dragging = true; game.sel = [i]; updSel(); Sound.tap(0); haptic(5); drawLines(e.clientX, e.clientY); try { wheel.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
-  wheel.addEventListener('pointermove', e => { if (!game.dragging) return; const i = hit(e.clientX, e.clientY);
-    if (i >= 0) { if (!game.sel.includes(i)) { game.sel.push(i); updSel(); Sound.tap(game.sel.length - 1); haptic(5); } else if (game.sel.length > 1 && game.sel[game.sel.length - 2] === i) { game.sel.pop(); updSel(); } }
+  // Words are matched by their letter STRING (submit), so any copy of a duplicated letter is valid. Backtracking (un-selecting the last letter)
+  // needs the pointer well inside the previous letter, so a swipe that merely passes near an already used copy on its way to the other copy does not undo.
+  wheel.addEventListener('pointermove', e => { if (!game.dragging) return; const [i, d] = hitD(e.clientX, e.clientY);
+    if (i >= 0) { if (!game.sel.includes(i)) { game.sel.push(i); updSel(); Sound.tap(game.sel.length - 1); haptic(5); } else if (game.sel.length > 1 && game.sel[game.sel.length - 2] === i && d < .55) { game.sel.pop(); updSel(); } }
     drawLines(e.clientX, e.clientY); });
   const endDrag = () => { if (!game.dragging) return; game.dragging = false; const w = curWord(), idx = game.sel.slice(); game.sel = []; drawLines(); game.letterEls.forEach(e => e.classList.remove('sel')); if (w.length) submit(w, idx); };
   wheel.addEventListener('pointerup', endDrag); wheel.addEventListener('pointercancel', endDrag);
@@ -392,7 +399,7 @@
   $('sheet').addEventListener('click', e => { const li = e.target.closest('[data-w]'); if (li && li.dataset.w) openCard(li.dataset.w, glossOf(li.dataset.w)); });
 
   /* ================= CREDITS ================= */
-  const GAME_VERSION = '0.9.3';
+  const GAME_VERSION = '1.0.2';
   function creditsHtml() {
     const ver = GAME_VERSION + (window.BUILD_V ? ' (' + window.BUILD_V + ')' : '') + (document.getElementById('testBadge') ? ' · ' + T('crTest') : '');
     return `<div class="about credits">

@@ -11,7 +11,7 @@ Y, M, D = DATE.split('-'); MRU = ['января','февраля','марта','
 MEN = ['January','February','March','April','May','June','July','August','September','October','November','December'][int(M)-1]
 DRU = f'{int(D)} {MRU} {Y}'; DEN = f'{MEN} {int(D)}, {Y}'
 import datetime; dt = datetime.date(int(Y), int(M), int(D)); RFC = dt.strftime('%a, %d %b %Y') + ' 14:00:00 +0300'
-SLUG = f'{DATE}-suz-donyasy'; VER = '1.0.0'
+SLUG = f'{DATE}-suz-donyasy'; VER = '1.0.2'
 APK = '/suz-donyasy/suz-donyasy.apk'; SIZE_RU = '27 МБ'; SIZE_EN = '27 MB'
 GAME = '/suz-donyasy/'; PRIV = '/suz-donyasy/privacy/'
 RU_P = 'https://pirogovlab.ru/suz-donyasy-igra/'; EN_P = 'https://pirogovlab.ru/en/suz-donyasy-igra/'
@@ -171,7 +171,7 @@ def blogpost(lang):
 <p>Нашли ошибку в слове или переводе? Напишите мне в <a href="/contacts/">Telegram</a> — буду исправлять. Рәхмәт!</p>
   </div>
   <div class="stores"><a class="btn" href="{GAME}">▶ Играть в браузере</a></div>
-  <div class="meta"><span class="pill">Версия {VER}</span><span class="pill">Браузер · Android скоро</span><span class="pill">Бесплатно</span></div>
+  <div class="meta"><span class="pill">Версия {VER}</span><a class="pill" href="https://pirogovlab.ru/suz-donyasy/suz-donyasy.apk" download>⬇ Android: скачать APK ({SIZE_RU})</a><a class="pill" href="/suz-donyasy-igra/">Страница игры</a><span class="pill">Бесплатно</span></div>
   <a class="proj" href="/suz-donyasy-igra/"><img src="/suz-donyasy-igra/img/kartochka-suz-donyasy.webp" width="480" height="320" alt=""><div><b>Сүз дөньясы</b><span>Страница игры: возможности, скриншоты, где играть</span></div><span class="go" aria-hidden="true">→</span></a>
   <a class="backlink" href="/blog/">← Все записи</a>
 </article>
@@ -202,7 +202,7 @@ def blogpost(lang):
 <p>Found a mistake in a word or translation? Message me on <a href="/en/contacts/">Telegram</a>.</p>
   </div>
   <div class="stores"><a class="btn" href="{GAME}" hreflang="ru">▶ Play in the browser</a></div>
-  <div class="meta"><span class="pill">Version {VER}</span><span class="pill">Browser · Android soon</span><span class="pill">Free</span></div>
+  <div class="meta"><span class="pill">Version {VER}</span><a class="pill" href="https://pirogovlab.ru/suz-donyasy/suz-donyasy.apk" download>⬇ Android: download APK ({SIZE_EN})</a><a class="pill" href="/en/suz-donyasy-igra/">Game page</a><span class="pill">Free</span></div>
   <a class="proj" href="/en/suz-donyasy-igra/"><img src="/suz-donyasy-igra/img/kartochka-suz-donyasy.webp" width="480" height="320" alt=""><div><b>Süz Dönyası</b><span>Game page: features, screenshots, where to play</span></div><span class="go" aria-hidden="true">→</span></a>
   <a class="backlink" href="/en/blog/">← All posts</a>
 </article>
