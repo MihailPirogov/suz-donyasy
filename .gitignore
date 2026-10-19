@@ -1,0 +1,23 @@
+# signing keys and passwords: NEVER commit
+release/keys/
+*.p12
+*.jks
+*.keystore
+keystore.properties
+local.properties
+# build outputs
+android/build/
+android/app/build/
+android/.gradle/
+android/app/src/main/assets/www/
+release/
+*.apk
+*.aab
+*.zip
+# sources / dumps (large, some GPL): re-download with tools/fetch_sources.sh
+src/
+test/node_modules/
+__pycache__/
+screens/
+shots/
+site_stage/

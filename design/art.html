@@ -1,0 +1,51 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:transparent}
+#c{position:relative;overflow:hidden;font-family:"Nunito","Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;color:#fff}
+#c .bg{position:absolute;inset:0;background-size:cover;background-position:center}
+#c .sh{position:absolute;inset:0}
+.t{position:absolute;font-weight:900;letter-spacing:1px;text-shadow:0 4px 0 #0d6448,0 8px 24px rgba(0,0,0,.55)}
+.s{position:absolute;font-weight:800;color:#fbe9b8;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+.ic{position:absolute;border-radius:22%;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.grid{position:absolute;display:grid;gap:6px;padding:12px;border-radius:18px;background:rgba(5,28,24,.45);backdrop-filter:blur(8px)}
+.cl{display:flex;align-items:center;justify-content:center;font-weight:900;border-radius:12px}
+.cl.f{background:linear-gradient(180deg,#167552,#1c9a6c 50%,#0d6448);color:#fffaf0;text-shadow:0 2px 2px rgba(0,0,0,.35)}
+.cl.e{background:rgba(251,241,220,.92);box-shadow:inset 0 0 0 2px #d9921c}
+.cl.n{background:transparent}
+</style></head><body><div id="c"></div><script>
+// crossword: САБАН / БАЛ / БАКЧА (Tatar words)
+const G=['САБАН','..А...','..Л...'];
+function grid(x,y,cell,font){
+ const rows=[['С','А','Б','А','Н'],['','','А','',''],['','','Л','','']];
+ const st=[['f','f','f','f','f'],['n','n','f','n','n'],['n','n','e','n','n']];
+ let h=`<div class="grid" style="left:${x}px;top:${y}px;grid-template-columns:repeat(5,${cell}px);grid-auto-rows:${cell}px">`;
+ rows.forEach((r,i)=>r.forEach((ch,j)=>{const s=st[i][j];h+=`<div class="cl ${s}" style="font-size:${font}px">${s==='f'?ch:''}</div>`}));
+ return h+'</div>';
+}
+function render(k){
+ const c=document.getElementById('c');
+ const T='Сүз дөньясы';
+ if(k==='feature'){ c.style.width='1024px';c.style.height='500px';
+  c.innerHTML=`<div class="bg" style="background-image:url(../img/bg/ch05_l.webp)"></div>
+  <div class="sh" style="background:linear-gradient(90deg,rgba(4,28,26,.82) 0,rgba(4,28,26,.55) 45%,rgba(4,28,26,0) 75%)"></div>
+  <img class="ic" src="../img/icon.png" style="left:56px;top:70px;width:150px;height:150px">
+  <div class="t" style="left:56px;top:240px;font-size:76px">${T}</div>
+  <div class="s" style="left:58px;top:345px;font-size:30px">Татарча сүз уены</div>
+  <div class="s" style="left:58px;top:390px;font-size:24px;color:#fff">Игра в слова на татарском языке</div>
+  ${grid(640,150,66,40)}`; return [1024,500]; }
+ if(k==='cover'){ c.style.width='800px';c.style.height='470px';
+  c.innerHTML=`<div class="bg" style="background-image:url(../img/bg/ch05_l.webp)"></div>
+  <div class="sh" style="background:linear-gradient(180deg,rgba(4,28,26,.15),rgba(4,28,26,.75))"></div>
+  <img class="ic" src="../img/icon.png" style="left:330px;top:40px;width:140px;height:140px">
+  <div class="t" style="left:0;right:0;text-align:center;top:205px;font-size:72px">${T}</div>
+  <div class="s" style="left:0;right:0;text-align:center;top:305px;font-size:28px">Татарча сүз уены</div>
+  <div class="s" style="left:0;right:0;text-align:center;top:350px;font-size:24px;color:#fff">Собирайте слова из букв · 1000 уровней</div>`; return [800,470]; }
+ if(k==='banner'){ c.style.width='1920px';c.style.height='1080px';
+  c.innerHTML=`<div class="bg" style="background-image:url(../img/bg/ch05_l.webp)"></div>
+  <div class="sh" style="background:linear-gradient(90deg,rgba(4,28,26,.82) 0,rgba(4,28,26,.5) 45%,rgba(4,28,26,0) 75%)"></div>
+  <img class="ic" src="../img/icon.png" style="left:120px;top:170px;width:300px;height:300px">
+  <div class="t" style="left:120px;top:510px;font-size:150px">${T}</div>
+  <div class="s" style="left:124px;top:720px;font-size:60px">Татарча сүз уены</div>
+  <div class="s" style="left:124px;top:810px;font-size:46px;color:#fff">Игра в слова на татарском языке</div>
+  ${grid(1180,330,130,80)}`; return [1920,1080]; }
+}
+</script></body></html>

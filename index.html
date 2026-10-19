@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Михаил Пирогов, PirogovLab">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0f2e2a">
+<meta name="description" content="Сүз дөньясы — словесная головоломка на татарском языке">
+<title>Сүз дөньясы — татарские слова</title>
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="css/style.css?v=20261019b">
+</head>
+<body>
+<div id="bg"></div><div id="bgShade"></div>
+<div id="app">
+  <!-- HOME -->
+  <section id="scrHome" class="screen">
+    <div class="topbar">
+      <button class="iconbtn" id="hSettings" aria-label="settings">⚙️</button>
+      <button class="iconbtn" id="hMusic" aria-label="music">🎵</button>
+      <div class="pill streak" id="hStreak">🔥 <b>0</b></div>
+      <div class="pill coins" id="hCoins"><i class="coin"></i><b>0</b></div>
+    </div>
+    <div class="logo">
+      <div class="logo-orn"></div>
+      <h1 id="tTitle">Сүз дөньясы</h1>
+      <div class="logo-sub" id="tSub">Мир татарских слов</div>
+    </div>
+    <div class="homeMain">
+      <button class="playbtn" id="hPlay"><span id="hPlayTxt">Играть</span><small id="hPlayLvl">Уровень 1</small></button>
+      <div class="chapterline" id="hChapter"></div>
+    </div>
+    <div class="tiles" id="hTiles"></div>
+    <a class="brand" id="hBrand" href="https://pirogovlab.ru" target="_blank" rel="noopener">Проект PirogovLab · pirogovlab.ru</a>
+  </section>
+  <!-- MAP -->
+  <section id="scrMap" class="screen">
+    <div class="topbar">
+      <button class="iconbtn" id="mBack">‹</button>
+      <div class="ttl" id="mTitle">Карта</div>
+      <div class="pill coins"><i class="coin"></i><b class="coinsVal">0</b></div>
+    </div>
+    <div class="maplist" id="mList"></div>
+  </section>
+  <!-- GAME -->
+  <section id="scrGame" class="screen">
+    <div class="topbar">
+      <button class="iconbtn" id="gBack">‹</button>
+      <div class="ttl"><span id="gTitle">Уровень 1</span><small id="gSub"></small></div>
+      <div class="pill coins" id="gCoins"><i class="coin"></i><b class="coinsVal">0</b></div>
+    </div>
+    <div class="prog"><i id="gProg"></i></div>
+    <div id="gridWrap"><div id="grid"></div></div>
+    <div id="preview"><span id="word"></span></div>
+    <div id="bottom">
+      <div class="side l">
+        <button class="gbtn" id="bShuffle" aria-label="shuffle">⟳</button>
+        <button class="gbtn" id="bJar" aria-label="bonus">🏺<span class="badge" id="jarBadge">0</span><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" id="jarRing"/></svg></button>
+      </div>
+      <div id="wheel"><div class="wheelOrn" aria-hidden="true"><div class="ornB"><svg class="ornP" viewBox="-9.192 -9.192 18.385 18.385" focusable="false"><g fill="currentColor"><path transform="rotate(0)" d="M0 -1.2 C-1.6 -2.4 -2.4 -4.4 -2.2 -7 L-1 -5.6 L0 -7.8 L1 -5.6 L2.2 -7 C2.4 -4.4 1.6 -2.4 0 -1.2 Z"/><path transform="rotate(90)" d="M0 -1.2 C-1.6 -2.4 -2.4 -4.4 -2.2 -7 L-1 -5.6 L0 -7.8 L1 -5.6 L2.2 -7 C2.4 -4.4 1.6 -2.4 0 -1.2 Z"/><path transform="rotate(180)" d="M0 -1.2 C-1.6 -2.4 -2.4 -4.4 -2.2 -7 L-1 -5.6 L0 -7.8 L1 -5.6 L2.2 -7 C2.4 -4.4 1.6 -2.4 0 -1.2 Z"/><path transform="rotate(270)" d="M0 -1.2 C-1.6 -2.4 -2.4 -4.4 -2.2 -7 L-1 -5.6 L0 -7.8 L1 -5.6 L2.2 -7 C2.4 -4.4 1.6 -2.4 0 -1.2 Z"/><circle transform="rotate(45)" cx="0" cy="-5.2" r=".9"/><circle transform="rotate(135)" cx="0" cy="-5.2" r=".9"/><circle transform="rotate(225)" cx="0" cy="-5.2" r=".9"/><circle transform="rotate(315)" cx="0" cy="-5.2" r=".9"/><circle r="1.1"/></g></svg></div></div><svg id="lines"></svg></div>
+      <div class="side r">
+        <button class="gbtn" id="bHint" aria-label="hint">💡<small><i class="coin"></i><span id="hintCost">25</span></small><span class="badge free" id="freeBadge" hidden>0</span></button>
+        <button class="gbtn" id="bWord" aria-label="word">🎯<small><i class="coin"></i>60</small></button>
+        <button class="gbtn ad" id="bAd" aria-label="Подсказка за рекламу" title="Подсказка за рекламу" hidden>🎬<small>+💡</small></button>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="modal" class="modal" hidden><div class="sheet" id="sheet"></div></div>
+<div id="cardModal" class="modal" hidden><div class="sheet wcard" id="cardSheet"></div></div>
+<div id="toast"></div>
+<div id="combo"></div>
+<div id="fly"></div>
+<canvas id="fx"></canvas>
+<script>window.BUILD_V='20261019b';</script>
+<script src="js/platform.js?v=20261019b"></script>
+<script src="js/sound.js?v=20261019b"></script>
+<script src="js/tracks.js?v=20261019b"></script>
+<script src="js/music.js?v=20261019b"></script>
+<script src="js/i18n.js?v=20261019b"></script>
+<script src="js/art.js?v=20261019b"></script>
+<script src="js/bgimages.js?v=20261019b"></script>
+<script src="data/levels.js?v=20261019b"></script>
+<script src="js/app.js?v=20261019b"></script>
+</body>
+</html>
