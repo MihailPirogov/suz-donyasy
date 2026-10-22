@@ -186,16 +186,24 @@
     if (kind === 'daily') { $('gTitle').textContent = T('daily'); $('gSub').textContent = dayKey(); }
     else { const ch = chapterOf(id); $('gTitle').textContent = T('level') + ' ' + (id + 1); $('gSub').textContent = chapName(ch) + ' · ' + (id + 2 - ch.start) + '/' + (ch.end - ch.start + 1); }
     show('game');
-    requestAnimationFrame(() => { buildGrid(); buildWheel(true); updProg(); updJar(); updHintBtns(); });
+    requestAnimationFrame(() => { buildGrid(); buildWheel(true); fitGrid(); updProg(); updJar(); updHintBtns(); });
     // preload cards for this level
     new Set(game.lv.w.map(x => x[0].codePointAt(0))).forEach(k => loadChunk(String.fromCodePoint(k)));
   }
   function persist() { st.cur = { kind: game.kind, id: game.id, found: [...game.found], bonus: [...game.bonus], hints: [...game.hints], usedHint: game.usedHint }; save(); }
 
+  // re-fit cells once the wheel has its final size (small screens / Android banner shrink the WebView)
+  function fitGrid() {
+    const g = $('grid'), lv = game.lv; if (!lv) return; const wr = $('gridWrap').getBoundingClientRect();
+    const size = Math.max(12, Math.min(56, Math.floor(Math.min((wr.width - 28) / lv.c, (wr.height - 28) / lv.r) - 4)));
+    if (g.style.gridTemplateRows === `repeat(${lv.r}, ${size}px)`) return;
+    g.style.gridTemplateColumns = `repeat(${lv.c}, ${size}px)`; g.style.gridTemplateRows = `repeat(${lv.r}, ${size}px)`;
+    g.querySelectorAll('.cell').forEach(d => { d.style.fontSize = (size * .6) + 'px'; });
+  }
   function buildGrid() {
     const g = $('grid'), lv = game.lv; g.innerHTML = ''; game.cells = {};
     const wr = $('gridWrap').getBoundingClientRect();
-    const size = Math.max(22, Math.min(56, Math.floor(Math.min((wr.width - 28) / lv.c, (wr.height - 28) / lv.r) - 4)));
+    const size = Math.max(12, Math.min(56, Math.floor(Math.min((wr.width - 28) / lv.c, (wr.height - 28) / lv.r) - 4)));
     g.style.gridTemplateColumns = `repeat(${lv.c}, ${size}px)`; g.style.gridTemplateRows = `repeat(${lv.r}, ${size}px)`;
     for (let r = 0; r < lv.r; r++) for (let c = 0; c < lv.c; c++) { const d = document.createElement('div'); d.className = 'cell'; d.style.fontSize = (size * .6) + 'px'; g.appendChild(d); game.cells[r + ',' + c] = { el: d, ch: null }; }
     lv.w.forEach(w => cellsOf(w).forEach(([r, c], i) => { const m = game.cells[r + ',' + c]; m.ch = w[0][i]; m.el.classList.add('on'); }));
@@ -232,7 +240,7 @@
   function buildWheel(anim) {
     const wh = $('wheel'); wh.querySelectorAll('.let').forEach(e => e.remove());
     const lowLand = innerWidth > innerHeight && innerHeight <= 540;  // phone landscape: wheel sits in the right column
-    const D = lowLand ? Math.max(150, Math.min(innerHeight - 180, 250)) : Math.max(170, Math.min(innerWidth - 150, innerHeight * .34, 290)); wh.style.width = wh.style.height = D + 'px'; game.R = D / 2;
+    const D = lowLand ? Math.max(150, Math.min(innerHeight - 180, 250)) : Math.max(innerHeight < 640 ? 130 : 170, Math.min(innerWidth - 150, innerHeight * (innerHeight < 640 ? .3 : .34), 290)); wh.style.width = wh.style.height = D + 'px'; game.R = D / 2;
     $('lines').setAttribute('viewBox', `0 0 ${D} ${D}`);
     const n = game.letters.length; game.letterEls = [];
     const rad = n <= 3 ? .52 : n <= 5 ? .64 : .7;
@@ -399,7 +407,7 @@
   $('sheet').addEventListener('click', e => { const li = e.target.closest('[data-w]'); if (li && li.dataset.w) openCard(li.dataset.w, glossOf(li.dataset.w)); });
 
   /* ================= CREDITS ================= */
-  const GAME_VERSION = '1.0.2';
+  const GAME_VERSION = '1.0.3';
   function creditsHtml() {
     const ver = GAME_VERSION + (window.BUILD_V ? ' (' + window.BUILD_V + ')' : '') + (document.getElementById('testBadge') ? ' · ' + T('crTest') : '');
     return `<div class="about credits">
@@ -962,7 +970,7 @@
   window.addEventListener('resize', () => { tutKey = ''; tutFingerKey = ''; });
 
   /* ================= INIT ================= */
-  window.addEventListener('resize', () => { if (screen === 'game' && game.lv) { buildGrid(); buildWheel(false); } });
+  window.addEventListener('resize', () => { if (screen === 'game' && game.lv) { buildGrid(); buildWheel(false); fitGrid(); } });
   Platform.onPause(() => save());
   document.querySelector('.logo-orn').style.backgroundImage = Art.ornament('#e9b949', '#b8202f', 18);
   // Tatar folk UI decoration: embroidered bands, panel corners, ichigi-mosaic wheel ring (all generated SVG, js/art.js)

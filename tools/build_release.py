@@ -14,7 +14,7 @@ for d in ('css', 'data', 'img', 'audio'):
     if os.path.isdir(d): shutil.copytree(d, os.path.join(out, d))
 os.makedirs(os.path.join(out, 'js/adapters'))
 for f in os.listdir('js'):
-    if f.endswith('.js'): shutil.copy(os.path.join('js', f), os.path.join(out, 'js', f))
+    if f.endswith('.js') and f != 'ads-config.js': shutil.copy(os.path.join('js', f), os.path.join(out, 'js', f))
 shutil.copy(f'js/adapters/{target}.js', os.path.join(out, f'js/adapters/{target}.js'))
 shutil.copy('index.html', os.path.join(out, 'index.html'))
 for junk in ('audio/SOURCES.json',):
@@ -27,6 +27,7 @@ def edit(rel, fn):
 
 def html(s):
     assert 'testBadge' not in s and 'noindex' not in s
+    s = re.sub(r'<script src="js/(?:ads-config|adapters/web)\.js[^"]*"></script>\n', '', s)  # web RTB ads: plain browser only
     s = re.sub(r'(src|href)="((?:js|css|data)/[^"?]+)"', lambda m: f'{m.group(1)}="{m.group(2)}?v={V}"', s)
     pre = f'<script>window.RELEASE=true;window.BUILD_V="{V}";</script>\n'
     if target == 'yandex':
